@@ -136,7 +136,7 @@ export default function Calculator() {
       return;
     }
 
-    const inputValue = Number(display);
+    const inputValue = display; // changed to string for bug production;
     const fn = operatorFunctions[operator];
 
     if (!fn) return;
@@ -223,13 +223,13 @@ export default function Calculator() {
     >
       <div
         style={{
-          height: 48,
+          height: 20,  // reduced display size for bug production
           marginBottom: "0.5rem",
           padding: "0.5rem",
           borderRadius: 4,
           border: "1px solid #ccc",
           textAlign: "right",
-          fontSize: 24,
+          fontSize: 30, // increased font size for bug production
           background: "#f9f9f9",
           overflow: "hidden",
           wordBreak: "break-all",
@@ -246,8 +246,8 @@ export default function Calculator() {
         }}
       >
         <button onClick={handleClear}>C</button>
-        <button onClick={() => handleUnaryOpClick("square")}>x²</button>
-        <button onClick={() => handleUnaryOpClick("sqrt")}>√</button>
+        <button onClick={() => handleUnaryOpClick("square")}>√</button> {/* swapped square and square root button image */}
+        <button onClick={() => handleUnaryOpClick("sqrt")}>x²</button> {/* swapped square and square root button image */}
         <button onClick={() => handleOperatorClick("÷")}>÷</button>
 
         <button onClick={() => handleDigitClick(7)}>7</button>
@@ -256,8 +256,8 @@ export default function Calculator() {
         <button onClick={() => handleOperatorClick("×")}>×</button>
 
         <button onClick={() => handleDigitClick(4)}>4</button>
-        <button onClick={() => handleDigitClick(5)}>5</button>
-        <button onClick={() => handleDigitClick(6)}>6</button>
+        <button onClick={() => handleDigitClick("5")}>5</button> {/* CHanged button to a string */}
+        <button onClick={() => handleDigitClick(6)}>6</button> 
         <button onClick={() => handleOperatorClick("-")}>-</button>
 
         <button onClick={() => handleDigitClick(1)}>1</button>
