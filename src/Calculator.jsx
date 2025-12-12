@@ -10,6 +10,7 @@ import {
   percentage,
 } from "./calculatorLogic";
 
+
 const operatorFunctions = {
   "+": add,
   "-": subtract,
@@ -17,7 +18,10 @@ const operatorFunctions = {
   "÷": divide,
 };
 
+
+
 export default function Calculator() {
+  const [egg, setEgg] = useState(null);
   const [display, setDisplay] = useState("0");
   const [firstOperand, setFirstOperand] = useState(null);
   const [operator, setOperator] = useState(null);
@@ -123,7 +127,8 @@ export default function Calculator() {
     }
 
     if (egg) {
-      setDisplay(egg);
+      setDisplay(egg.message);
+      setEgg(egg);
       setFirstOperand(null);
       setOperator(null);
       setWaitingForSecondOperand(false);
@@ -136,7 +141,7 @@ export default function Calculator() {
       return;
     }
 
-    const inputValue = display; // changed to string for bug production;
+    const inputValue = display; 
     const fn = operatorFunctions[operator];
 
     if (!fn) return;
@@ -211,6 +216,10 @@ export default function Calculator() {
   }
 
   return (
+    
+    
+
+    
     <div
       style={{
         width: 260,
@@ -219,6 +228,8 @@ export default function Calculator() {
         borderRadius: 8,
         border: "1px solid #ddd",
         fontFamily: "system-ui, sans-serif",
+        flexWrap: 'wrap',
+        wordWrap: 'break-word',
       }}
     >
       <div
@@ -228,7 +239,7 @@ export default function Calculator() {
           padding: "0.5rem",
           borderRadius: 4,
           border: "1px solid #ccc",
-          textAlign: "right",
+          textAlign: "left",
           fontSize: 30, // increased font size for bug production
           background: "#f9f9f9",
           overflow: "hidden",
@@ -237,7 +248,11 @@ export default function Calculator() {
       >
         {display}
       </div>
-
+         {egg && (
+  <div style={{ textAlign: "center", marginBottom: "0.5rem" }}>
+    <img src={egg.media} style={{ width: "100%" }} />
+  </div>
+      )}
       <div
         style={{
           display: "grid",

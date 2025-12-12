@@ -1,4 +1,7 @@
 // calculatorLogic.js
+import evilGIF from "./assets/Evil.gif";
+import sixSevenGIF from "./assets/sixseven.gif";
+import tripleGIF from "./assets/Triple.gif";
 
 export function normaliseNumber(value) {
   if (typeof value === "number") return value;
@@ -58,9 +61,21 @@ export function EasterEgg(raw) {
     return null;
   }
 
-  if (num === 666) return "You have summoned an evil spirit";
-  if (num === 420) return "OH BAYBE A TRIPLE!";
-  if (num === 67) return "I'm too old to understand this one, sorry";
+  if (num === 666) return {
+    code : 666,
+    message : "You have summoned an evil spirit",
+    media: evilGIF
+    };
+  if (num === 420) return {
+    code: 420,
+    message: "OH BAYBE A TRIPLE!",
+    media: tripleGIF
+    };
+  if (num === 67) return {
+    code: 67,
+    message: "I'm too old to understand this one, sorry",
+    media: sixSevenGIF
+    };
 
   return null;
 }
