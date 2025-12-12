@@ -227,7 +227,7 @@ export default function Calculator() {
         padding: "1rem",
         borderRadius: 8,
         border: "1px solid #ddd",
-        fontFamily: "system-ui, sans-serif",
+        fontFamily: "Arial, Helvetica, sans-serif",
         flexWrap: 'wrap',
         wordWrap: 'break-word',
       }}
@@ -240,10 +240,12 @@ export default function Calculator() {
           borderRadius: 4,
           border: "1px solid #ccc",
           textAlign: "left",
-          fontSize: 30, // increased font size for bug production
+          fontSize: 40, // increased font size for bug production
           background: "#f9f9f9",
           overflow: "hidden",
           wordBreak: "break-all",
+          fontFamily: "Arial, Helvetica, sans-serif",
+
         }}
       >
         {display}
@@ -258,6 +260,7 @@ export default function Calculator() {
           display: "grid",
           gridTemplateColumns: "repeat(4, 1fr)",
           gap: "0.5rem",
+          
         }}
       >
         <button onClick={handleClear}>C</button>
@@ -271,7 +274,7 @@ export default function Calculator() {
         <button onClick={() => handleOperatorClick("×")}>×</button>
 
         <button onClick={() => handleDigitClick(4)}>4</button>
-        <button onClick={() => handleDigitClick("5")}>5</button> {/* CHanged button to a string */}
+        <button onClick={() => handleDigitClick(5)}>5</button> 
         <button onClick={() => handleDigitClick(6)}>6</button> 
         <button onClick={() => handleOperatorClick("-")}>-</button>
 
