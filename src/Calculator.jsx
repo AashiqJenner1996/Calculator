@@ -223,7 +223,7 @@ export default function Calculator() {
     <div
       style={{
         width: 260,
-        margin: "1rem auto",
+        margin: "0 auto",
         padding: "1rem",
         borderRadius: 8,
         border: "1px solid #ddd",
