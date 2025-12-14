@@ -6,10 +6,9 @@ import {
   divide,
   power,
   squareRoot,
-  EasterEgg,
   percentage,
-} from "./calculatorLogic";
-
+  EasterEgg,
+} from "../../logic";
 
 const operatorFunctions = {
   "+": add,
@@ -18,14 +17,13 @@ const operatorFunctions = {
   "÷": divide,
 };
 
-
-
 export default function Calculator() {
   const [egg, setEgg] = useState(null);
   const [display, setDisplay] = useState("0");
   const [firstOperand, setFirstOperand] = useState(null);
   const [operator, setOperator] = useState(null);
   const [waitingForSecondOperand, setWaitingForSecondOperand] = useState(false);
+  const [eggClosing, setEggClosing] = useState(false);
 
   function handleDigitClick(digit) {
     if (display === "Error") {
@@ -43,9 +41,7 @@ export default function Calculator() {
     }
 
     setDisplay((prev) => {
-      if (prev === "0") {
-        return String(digit);
-      }
+      if (prev === "0") return String(digit);
       return prev + String(digit);
     });
   }
@@ -64,14 +60,14 @@ export default function Calculator() {
         setWaitingForSecondOperand(false);
         return "0.";
       }
-      if (prev.includes(".")) {
-        return prev;
-      }
+      if (prev.includes(".")) return prev;
       return prev + ".";
     });
   }
 
   function handleClear() {
+    setEggClosing(false);
+    setEgg(null);
     setDisplay("0");
     setFirstOperand(null);
     setOperator(null);
@@ -101,7 +97,6 @@ export default function Calculator() {
     }
 
     setOperator(nextOperator);
-    // Only wait for a new number if we actually pressed another operator
     setWaitingForSecondOperand(nextOperator !== null);
   }
 
@@ -113,12 +108,10 @@ export default function Calculator() {
   function handleEqualsClick() {
     if (display === "Error") return;
 
-    // 1. Easter egg first
     let egg;
     try {
       egg = EasterEgg(display);
     } catch (err) {
-      // If EasterEgg logic throws, show Error and reset
       setDisplay("Error");
       setFirstOperand(null);
       setOperator(null);
@@ -129,21 +122,24 @@ export default function Calculator() {
     if (egg) {
       setDisplay(egg.message);
       setEgg(egg);
+      setTimeout(() => {
+        setEggClosing(true);
+        setTimeout(() => {
+          setEgg(null);
+          setEggClosing(false);
+          setDisplay(""); // known bug
+        }, 180);
+      }, 2500);
       setFirstOperand(null);
       setOperator(null);
       setWaitingForSecondOperand(false);
       return;
     }
 
-    // 2. Normal equals behaviour
-    if (!operator || firstOperand === null) {
-      // Nothing to calculate, just leave display as is
-      return;
-    }
+    if (!operator || firstOperand === null) return;
 
-    const inputValue = display; 
+    const inputValue = display;
     const fn = operatorFunctions[operator];
-
     if (!fn) return;
 
     try {
@@ -151,7 +147,7 @@ export default function Calculator() {
       setDisplay(String(result));
       setFirstOperand(result);
       setOperator(null);
-      setWaitingForSecondOperand(true); // next digit starts a new number
+      setWaitingForSecondOperand(true);
     } catch (err) {
       setDisplay("Error");
       setFirstOperand(null);
@@ -167,13 +163,9 @@ export default function Calculator() {
 
     try {
       let result;
-      if (type === "square") {
-        result = power(value);
-      } else if (type === "sqrt") {
-        result = squareRoot(value);
-      } else {
-        return;
-      }
+      if (type === "square") result = power(value);
+      else if (type === "sqrt") result = squareRoot(value);
+      else return;
 
       setDisplay(String(result));
       setFirstOperand(null);
@@ -216,11 +208,8 @@ export default function Calculator() {
   }
 
   return (
-    
-    
-
-    
     <div
+      data-testid="calculator"
       style={{
         width: 260,
         margin: "0 auto",
@@ -228,71 +217,76 @@ export default function Calculator() {
         borderRadius: 8,
         border: "1px solid #ddd",
         fontFamily: "Arial, Helvetica, sans-serif",
-        flexWrap: 'wrap',
-        wordWrap: 'break-word',
+        flexWrap: "wrap",
+        wordWrap: "break-word",
       }}
     >
       <div
+        data-testid="display"
         style={{
-          height: 20,  // reduced display size for bug production
+          height: 20,
           marginBottom: "0.5rem",
           padding: "0.5rem",
           borderRadius: 4,
           border: "1px solid #ccc",
           textAlign: "left",
-          fontSize: 40, // increased font size for bug production
+          fontSize: 40,
           background: "#f9f9f9",
           overflow: "hidden",
           wordBreak: "break-all",
           fontFamily: "Arial, Helvetica, sans-serif",
-
         }}
       >
         {display}
       </div>
-         {egg && (
-  <div style={{ textAlign: "center", marginBottom: "0.5rem" }}>
-    <img src={egg.media} style={{ width: "100%" }} />
-  </div>
+
+      {egg && (
+        <div data-testid="egg" style={{ textAlign: "center", marginBottom: "0.5rem" }}>
+          <img data-testid="egg-image" src={egg.media} style={{ width: "100%" }} />
+        </div>
       )}
+
       <div
+        data-testid="keypad"
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(4, 1fr)",
           gap: "0.5rem",
-          
         }}
       >
-        <button onClick={handleClear}>C</button>
-        <button onClick={() => handleUnaryOpClick("square")}>√</button> {/* swapped square and square root button image */}
-        <button onClick={() => handleUnaryOpClick("sqrt")}>x²</button> {/* swapped square and square root button image */}
-        <button onClick={() => handleOperatorClick("÷")}>÷</button>
+        <button data-testid="btn-clear" onClick={handleClear}>C</button>
+        <button data-testid="btn-square" onClick={() => handleUnaryOpClick("square")}>√</button>
+        <button data-testid="btn-sqrt" onClick={() => handleUnaryOpClick("sqrt")}>x²</button>
+        <button data-testid="btn-divide" onClick={() => handleOperatorClick("÷")}>÷</button>
 
-        <button onClick={() => handleDigitClick(7)}>7</button>
-        <button onClick={() => handleDigitClick(8)}>8</button>
-        <button onClick={() => handleDigitClick(9)}>9</button>
-        <button onClick={() => handleOperatorClick("×")}>×</button>
+        <button data-testid="btn-7" onClick={() => handleDigitClick(7)}>7</button>
+        <button data-testid="btn-8" onClick={() => handleDigitClick(8)}>8</button>
+        <button data-testid="btn-9" onClick={() => handleDigitClick(9)}>9</button>
+        <button data-testid="btn-multiply" onClick={() => handleOperatorClick("×")}>×</button>
 
-        <button onClick={() => handleDigitClick(4)}>4</button>
-        <button onClick={() => handleDigitClick(5)}>5</button> 
-        <button onClick={() => handleDigitClick(6)}>6</button> 
-        <button onClick={() => handleOperatorClick("-")}>-</button>
+        <button data-testid="btn-4" onClick={() => handleDigitClick(4)}>4</button>
+        <button data-testid="btn-5" onClick={() => handleDigitClick(5)}>5</button>
+        <button data-testid="btn-6" onClick={() => handleDigitClick(6)}>6</button>
+        <button data-testid="btn-minus" onClick={() => handleOperatorClick("-")}>-</button>
 
-        <button onClick={() => handleDigitClick(1)}>1</button>
-        <button onClick={() => handleDigitClick(2)}>2</button>
-        <button onClick={() => handleDigitClick(3)}>3</button>
-        <button onClick={() => handleOperatorClick("+")}>+</button>
+        <button data-testid="btn-1" onClick={() => handleDigitClick(1)}>1</button>
+        <button data-testid="btn-2" onClick={() => handleDigitClick(2)}>2</button>
+        <button data-testid="btn-3" onClick={() => handleDigitClick(3)}>3</button>
+        <button data-testid="btn-plus" onClick={() => handleOperatorClick("+")}>+</button>
 
         <button
+          data-testid="btn-0"
           onClick={() => handleDigitClick(0)}
           style={{ gridColumn: "span 2" }}
         >
           0
         </button>
-        <button onClick={handleDecimalClick}>.</button>
-        <button onClick={handlePercentClick}>%</button>
+
+        <button data-testid="btn-decimal" onClick={handleDecimalClick}>.</button>
+        <button data-testid="btn-percent" onClick={handlePercentClick}>%</button>
 
         <button
+          data-testid="btn-equals"
           onClick={handleEqualsClick}
           style={{ gridColumn: "span 4", marginTop: "0.5rem" }}
         >
