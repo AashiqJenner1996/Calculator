@@ -2,6 +2,7 @@
 import evilGIF from '../assets/Evil.gif';
 import sixSevenGIF from '../assets/sixseven.gif';
 import tripleGIF from '../assets/Triple.gif';
+import { READY_PLAYER_ONE_KEY_FRAMES } from "../assets/ascii/keyFrames";
 
 
 export function EasterEgg(raw) {
@@ -25,6 +26,14 @@ export function EasterEgg(raw) {
     message: "I'm too old to understand this one, sorry",
     media: sixSevenGIF
     };
+  if (num === 42) return {
+    code: 42,
+    message: "Enter, Player",
+    asciiFrames: READY_PLAYER_ONE_KEY_FRAMES,
+    asciiMs: 90,
+    asciiTotalMs: 1800
+    };
+
 
   return null;
 }
